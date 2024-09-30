@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import Image from "next/image";
@@ -6,30 +7,28 @@ import React from "react";
 import UploadcareButton from "./uploadcare-button";
 
 type Props = {
-    userImage: string
-    onDelete?: any
-    onUpload: any
+  userImage: string;
+  onDelete?: any;
+  onUpload: any;
 };
 
-const ProfilePrictre = ({onDelete, userImage, onUpload}: Props) => {
+const ProfilePicture = ({ onDelete, userImage, onUpload }: Props) => {
+  const router = useRouter();
 
-    const router = useRouter()
-
-    const onRemoveProfileImage = async()=>{
-        const response = await onDelete()
+  const onRemoveProfileImage = async () => {
+    const response = await onDelete();
+    if(response){
+      router.refresh()
     }
+  };
   return (
     <div className="flex flex-col">
       <p className="text-wite text-lg">Profile Picture</p>
       <div className="flex h-[30vh] flex-col items-center justify-center">
-      {userImage ? (
+        {userImage ? (
           <>
             <div className="relative h-full w-2/12">
-              <Image
-                src={userImage}
-                alt="User_Image"
-                fill
-              />
+              <Image src={userImage} alt="User_Image" fill />
             </div>
             <Button
               onClick={onRemoveProfileImage}
@@ -46,4 +45,4 @@ const ProfilePrictre = ({onDelete, userImage, onUpload}: Props) => {
   );
 };
 
-export default ProfilePrictre;
+export default ProfilePicture;

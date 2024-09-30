@@ -1,24 +1,23 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+// middleware.ts
+import { getToken } from "next-auth/jwt";
+import { NextRequest, NextResponse } from "next/server";
 
-// export default clerkMiddleware()
-const isPublicRoute = createRouteMatcher(['/',
-    '/api/clerk-webhook',
-    '/api/drive-activity/notification',
-    '/api/payment/success','/sign-in(.*)', '/sign-up(.*)'])
+export async function middleware(req: NextRequest) {
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-export default clerkMiddleware((auth, request) => {
-  if (!isPublicRoute(request)) {
-    auth().protect()
+  const { pathname } = req.nextUrl;
+
+  // Allow the request if it's for the sign-in page, API calls, or if the user has a token
+  if (pathname.startsWith("/auth") || pathname.startsWith("/api") || token) {
+    return NextResponse.next();
   }
-})
+
+  // Redirect to sign-in page if not authenticated
+  return NextResponse.redirect(new URL("/sign-in", req.url));
+}
 
 export const config = {
-  matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
-    '/(api|trpc)(.*)',
-  ],
+  matcher: ["/dashboard/:path*", "/profile/:path*", "/settings/:path*"], // Apply to multiple paths
 };
 
 // https://www.googleapis.com/auth/userinfo.email
