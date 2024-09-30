@@ -1,13 +1,18 @@
-'use client'
-import { Book, Headphones, Search } from 'lucide-react'
-import React from 'react'
-import { Input } from '../ui/input'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
-import { signOut, useSession } from 'next-auth/react'
-import Image from 'next/image'
+"use client";
+import { Book, Headphones, Search } from "lucide-react";
+import React from "react";
+import { Input } from "../ui/input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
+import { Button } from "../ui/button";
 
-
-type Props = {}
+type Props = {};
 
 const Infobar = (props: Props) => {
   const { data: session, status } = useSession();
@@ -52,15 +57,19 @@ const Infobar = (props: Props) => {
         </Tooltip>
       </TooltipProvider>
       <div>
-      {/* <h2>Welcome, {session?.user?.name}!</h2>
-      <p>Email: {session?.user?.email}</p> */}
-      <button onClick={() => signOut({ callbackUrl: "/" })}>
-        Log out
-      </button>
-      <Image className='rounded-full' width={40} height={40} src={session?.user?.image || "/default-avatar.png"} alt="Profile Picture" />
+        <div className="flex gap-2 items-center">
+          <Button onClick={() => signOut({ callbackUrl: "/" })}>Log out</Button>
+          <Image
+            className="rounded-full"
+            width={40}
+            height={40}
+            src={session?.user?.image || "/default-avatar.png"}
+            alt="Profile Picture"
+          />
+        </div>
+      </div>
     </div>
-    </div>
-  )
-}
+  );
+};
 
-export default Infobar
+export default Infobar;
